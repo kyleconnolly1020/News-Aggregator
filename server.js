@@ -29,7 +29,7 @@ mongoose.connect(MONGODB_URI, {
 var PORT = process.env.PORT || 3000; 
 
 //Handle routing for various api requests
-require("./public/routes/api-routes.js")(app);
+require("./routes/api-routes.js")(app);
 
 //Starting the server 
 app.listen(PORT, function() {

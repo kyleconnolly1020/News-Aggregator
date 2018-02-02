@@ -36,3 +36,31 @@
 .pull-left {
     float: left;
 }
+
+#commentsTitle {
+    font-size: 20px;
+    text-align: center;
+    font-weight: bold;
+    text-decoration: underline;
+    margin-right: 170px;
+}
+
+#commentsubmit {
+    float: left !important;
+}
+
+.commentText {
+    font-size: 16px !important;
+}
+
+#deletebutton {
+    font-family: Arial, Helvetica, sans-serif
+}
+
+.jumbotron {
+    margin-top: 50px;
+    text-align: center;
+    font-family: "../CloisterBlack.ttf";
+    
+   
+}

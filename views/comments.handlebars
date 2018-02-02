@@ -1,1 +1,57 @@
-{{comments}};
+<br><br><br><br><br>
+<div class="panel panel-success">
+    <div class="panel-heading">
+        <a id="headinglink" href={{comments.url}}>
+            <h3 class="panel-title pull-left">{{comments.headline}}</h3>
+        </a>
+        <div class="clearfix"></div>
+    </div>
+    <br>
+    <form>
+        <div class="form-row align-items-center">
+            <div class="col-auto">
+                <label class="sr-only" for="inlineFormInput">Name</label>
+                <input type="text" class="form-control mb-2" id="inlineFormInput" placeholder="Add A Comment">
+            </div>
+        </div>
+    </form>
+    <button id="commentsubmit" class="btn btn-default pull-right" data-id={{comments._id}}>Add Comment</button>
+    <div class="panel-body" id="commentsTitle">
+        Comments
+    </div>
+    {{#each comments.comments}}
+    <div class="panel-body commentText" style="border-bottom: 1pt solid darkgreen">
+        {{body}}
+        <button class="btn btn-default pull-right" id="deletebutton" data-id={{_id}}>Delete Comment</button>
+    </div>
+    {{/each}}
+</div>
+
+<script>
+
+    $("#commentsubmit").on("click", function () {
+        var thisId = $(this).attr("data-id");
+        $.ajax({
+            method: "POST",
+            url: "/comments/" + thisId,
+            data: {
+                body: $("#inlineFormInput").val()
+            }
+        }).then(function (data) {
+            console.log(data.body);
+            window.location.href = "/comments/" + thisId;
+        });
+    });
+
+    $("#deletebutton").on("click", function() {
+        var articleId = $("commentsubmit").attr("data-id");
+        var commentId = $(this).attr("data-id")
+
+        $.ajax({
+            type: "DELETE",
+            url: "/comments/" + articleId + "/" + commentId
+        }).then(function(data){
+            window.location.href = "/comments/" + articleId;
+        });
+    });
+</script>

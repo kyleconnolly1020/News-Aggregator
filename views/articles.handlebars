@@ -1,10 +1,16 @@
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-3">News Net</h1>
+  </div>
+</div>
+<br><br>
 {{#each articles}}
-<div class="panel panel-success" data-id={{_id}}>
+<div class="panel panel-success">
     <div class="panel-heading">
         <a id="headinglink" href={{url}}>
             <h3 class="panel-title pull-left">{{headline}}</h3>
         </a>
-        <button id="commentsbutton" type="button" class="btn btn-default pull-right">Comments</button>
+        <a href="/comments/{{_id}}"><button id="commentsbutton" type="button" class="btn btn-default pull-right">Comments</button></a>
         <div class="clearfix"></div>
     </div>
     <div class="panel-body">
@@ -12,32 +18,3 @@
     </div>
 </div>
 {{/each}}
-
-<script>
-
-    $(".btn").on("click", function () {
-        var thisId = $(this).parent(".panel-heading").parent(".panel").attr("data-id");
-        console.log(thisId);
-
-        $.ajax({
-            method: "GET",
-            url: "/comments/" + thisId
-        });
-    });
-
-    $("#savecomment[TEMP]").on("click", function () {
-        var thisId = $(this).attr("data-id");
-
-        $.ajax({
-            method: "POST",
-            url: "/articles/" + thisId,
-            data: {
-                body: $("#bodyinput").val()
-            }
-        }).then(function (data) {
-            console.log(data);
-            $("#comments[TEMP]").empty();
-        });
-        $("#bodyinput").val("");
-    });
-</script>
