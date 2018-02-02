@@ -1,0 +1,43 @@
+{{#each articles}}
+<div class="panel panel-success" data-id={{_id}}>
+    <div class="panel-heading">
+        <a id="headinglink" href={{url}}>
+            <h3 class="panel-title pull-left">{{headline}}</h3>
+        </a>
+        <button id="commentsbutton" type="button" class="btn btn-default pull-right">Comments</button>
+        <div class="clearfix"></div>
+    </div>
+    <div class="panel-body">
+        <a id="summarylink" href={{url}}> {{summary}} </a>
+    </div>
+</div>
+{{/each}}
+
+<script>
+
+    $(".btn").on("click", function () {
+        var thisId = $(this).parent(".panel-heading").parent(".panel").attr("data-id");
+        console.log(thisId);
+
+        $.ajax({
+            method: "GET",
+            url: "/comments/" + thisId
+        });
+    });
+
+    $("#savecomment[TEMP]").on("click", function () {
+        var thisId = $(this).attr("data-id");
+
+        $.ajax({
+            method: "POST",
+            url: "/articles/" + thisId,
+            data: {
+                body: $("#bodyinput").val()
+            }
+        }).then(function (data) {
+            console.log(data);
+            $("#comments[TEMP]").empty();
+        });
+        $("#bodyinput").val("");
+    });
+</script>

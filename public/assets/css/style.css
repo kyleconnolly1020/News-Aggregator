@@ -1,0 +1,38 @@
+.panel {
+    width: 60%;
+    margin: 0 auto;
+}
+
+.panel-title {
+    font-size: 24px !important;
+    font-weight: bold !important;
+    word-wrap: break-word !important;
+}
+
+.panel-body {
+    font-size: 18px; 
+    font-family: Palatino;
+}
+
+.navbar-brand {
+    color: white !important;
+}
+
+.btn-default {
+    margin-right: 15px;
+    color: darkgreen !important;
+    font-weight: bold !important; 
+}
+
+#headinglink, #headinglink:hover{
+    text-decoration: none;
+    color: darkgreen;
+}
+
+#summarylink {
+    color: black;
+}
+
+.pull-left {
+    float: left;
+}
