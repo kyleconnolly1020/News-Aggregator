@@ -70,7 +70,10 @@ module.exports = function (app) {
     app.delete("/comments/:id/:id2", function (req, res) {
         db.Article.findOneAndUpdate({ _id: req.params.id }, { $pullAll: { comments: [req.params.id2] } })
             .then(function () {
-                db.Comment.update({}, { $pull: { _id: req.params.id2 } });
-            });
+                db.Comment.findByIdAndRemove(req.params.id2)
+                    .then(function (data) {
+                        res.json(data);
+                    });
+            })
     });
 };

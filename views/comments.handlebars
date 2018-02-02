@@ -22,7 +22,7 @@
     {{#each comments.comments}}
     <div class="panel-body commentText" style="border-bottom: 1pt solid darkgreen">
         {{body}}
-        <button class="btn btn-default pull-right" id="deletebutton" data-id={{_id}}>Delete Comment</button>
+        <button class="btn btn-default pull-right deletebutton" data-id={{_id}}>Delete Comment</button>
     </div>
     {{/each}}
 </div>
@@ -43,10 +43,11 @@
         });
     });
 
-    $("#deletebutton").on("click", function() {
-        var articleId = $("commentsubmit").attr("data-id");
+    $(".deletebutton").on("click", function() {
+        var articleId = $("#commentsubmit").attr("data-id");
         var commentId = $(this).attr("data-id")
-
+        var URL = "/comments/" + articleId + "/" + commentId;
+        console.log(URL);
         $.ajax({
             type: "DELETE",
             url: "/comments/" + articleId + "/" + commentId
