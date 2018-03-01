@@ -3,7 +3,8 @@ var cheerio = require("cheerio");
 var db = require("../models");
 
 module.exports = function (app) {
-
+    
+    //Use Cheerio to scrape the article headlines from Financial Times, format it properly, and store it in MongoDB database
     app.get("/scrape", function (req, res) {
         request("https://www.ft.com/", function (error, response, html) {
             var $ = cheerio.load(html);
@@ -19,20 +20,20 @@ module.exports = function (app) {
                 result.summary = $(this).children(".o-teaser__standfirst").text();
                 result.url = `https://www.ft.com${$(this).children(".o-teaser__heading").children("a").attr("href")}`;
 
-                // if(result.summary !== ''){
                 db.Article.create(result)
                     .then(function (dbArticle) {
                     })
                     .catch(function (err) {
                         return res.json(err);
                     });
-                // }
+                
             });
 
             res.redirect("/");
         });
     });
 
+    //Root route for displaying all stored articles 
     app.get("/", function (req, res) {
         db.Article.find({})
             .then(function (dbArticle) {
@@ -43,6 +44,7 @@ module.exports = function (app) {
             });
     });
 
+    //Populate the comments for the article, based on the id of the article
     app.get("/comments/:id", function (req, res) {
         db.Article.findOne({ _id: req.params.id })
             .populate("comments")
@@ -54,6 +56,7 @@ module.exports = function (app) {
             });
     });
 
+    //Create a new comment for associated article (by _id)
     app.post("/comments/:id", function (req, res) {
         db.Comment.create(req.body)
             .then(function (dbComments) {
@@ -67,6 +70,7 @@ module.exports = function (app) {
             });
     });
 
+    //Route for deleting a comment for the article 
     app.delete("/comments/:id/:id2", function (req, res) {
         db.Article.findOneAndUpdate({ _id: req.params.id }, { $pullAll: { comments: [req.params.id2] } })
             .then(function () {
@@ -74,6 +78,6 @@ module.exports = function (app) {
                     .then(function (data) {
                         res.json(data);
                     });
-            })
+            });
     });
 };
