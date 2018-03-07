@@ -3,39 +3,42 @@ var cheerio = require("cheerio");
 var db = require("../models");
 
 module.exports = function (app) {
+
+        //Use Cheerio to scrape the article headlines from Financial Times, format it properly, and store it in MongoDB database
+        app.get("/scrape", function (req, res) {
+            let articles = [];
+            request("https://www.ft.com/", function (error, response, html) {
+                var $ = cheerio.load(html);
+                $(".o-teaser__content").each(function (i, element) {
+                    var result = {};
     
-    //Use Cheerio to scrape the article headlines from Financial Times, format it properly, and store it in MongoDB database
-    app.get("/scrape", function (req, res) {
-        request("https://www.ft.com/", function (error, response, html) {
-            var $ = cheerio.load(html);
-
-            $(".o-teaser__content").each(function (i, element) {
-                var result = {};
-
-                var title = $(this).children(".o-teaser__heading").text();
-                var titletrim = title.trim();
-                var titletrimNewLine = titletrim.replace(/\r?\n|\r/g, "");
-
-                result.headline = titletrimNewLine;
-                result.summary = $(this).children(".o-teaser__standfirst").text();
-                result.url = `https://www.ft.com${$(this).children(".o-teaser__heading").children("a").attr("href")}`;
-
-                db.Article.create(result)
-                    .then(function (dbArticle) {
-                    })
-                    .catch(function (err) {
-                        return res.json(err);
+                    var title = $(this).children(".o-teaser__heading").text();
+                    var titletrim = title.trim();
+                    var titletrimNewLine = titletrim.replace(/\r?\n|\r/g, "");
+    
+                    result.headline = titletrimNewLine;
+                    result.summary = $(this).children(".o-teaser__standfirst").text();
+                    result.url = `https://www.ft.com${$(this).children(".o-teaser__heading").children("a").attr("href")}`;
+    
+                    if(result.headline && result.summary && result.url) {
+                        articles.push(result);
+                    }
+                    
+                });
+                db.Article.remove()
+                db.Article.insertMany(articles)
+                    .then(function(data){
+                        res.redirect("/");
+                    }).catch(function(err){
+                        res.redirect("/");
                     });
-                
             });
-
-            res.redirect("/");
         });
-    });
+
 
     //Root route for displaying all stored articles 
     app.get("/", function (req, res) {
-        db.Article.find({})
+        db.Article.find({}).sort( { "_id": -1 })
             .then(function (dbArticle) {
                 res.render("articles", { articles: dbArticle });
             })
